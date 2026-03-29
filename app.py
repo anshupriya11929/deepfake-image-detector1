@@ -1,4 +1,8 @@
 import streamlit as st
+
+# MUST be the first Streamlit command
+st.set_page_config(page_title="DeepFake Detector", layout="centered")
+
 import tensorflow as tf
 import numpy as np
 from tensorflow.keras.preprocessing import image
@@ -13,7 +17,6 @@ def load_model():
 
 model = load_model()
 
-st.set_page_config(page_title="DeepFake Detector", layout="centered")
 st.title("🧬 DeepFake Image Detector")
 st.write("Upload a face image to check whether it is Real or Fake.")
 
