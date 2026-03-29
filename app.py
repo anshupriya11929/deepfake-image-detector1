@@ -7,8 +7,11 @@ from PIL import Image
 MODEL_PATH = "models/deepfake_detector.keras"
 IMG_SIZE = (224, 224)
 
-# Load model
-model = tf.keras.models.load_model(MODEL_PATH)
+@st.cache_resource
+def load_model():
+    return tf.keras.models.load_model(MODEL_PATH)
+
+model = load_model()
 
 st.set_page_config(page_title="DeepFake Detector", layout="centered")
 st.title("🧬 DeepFake Image Detector")
@@ -20,13 +23,11 @@ if uploaded_file is not None:
     img = Image.open(uploaded_file).convert("RGB")
     st.image(img, caption="Uploaded Image", use_container_width=True)
 
-    # Preprocess image
     img_resized = img.resize(IMG_SIZE)
     img_array = image.img_to_array(img_resized)
-    img_array = img_array / 255.0
     img_array = np.expand_dims(img_array, axis=0)
+    img_array = tf.keras.applications.efficientnet.preprocess_input(img_array)
 
-    # Predict
     prediction = model.predict(img_array)[0][0]
 
     if prediction > 0.5:
